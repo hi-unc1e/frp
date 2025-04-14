@@ -7,6 +7,61 @@
 
 [README](README.md) | [中文文档](README_zh.md)
 
+# FRP 隐蔽化增强版
+> 🚀 新特性：可隐藏frpc配置文件
+
+![隐蔽化效果](doc/pic/embeded.png)
+
+## 🛠️ 功能特性
+**配置文件隐身技术** (2025.04.14) 
+
+通过二进制固化（Embed）技术实现敏感配置零落地，适用于红队渗透、H行动等敏感场景。
+
+| 模式        | 启动命令             | 适用场景                  | 安全等级 |
+|------------|---------------------|-------------------------|--------|
+| 隐身模式（使用内嵌配置）    | `./frpc_embeded`    | 红队渗透/APT防护         | ★★★★★  |
+| 降级模式    | `./frpc -c config`  | 常规测试/调试            | ★★☆    |
+
+## 📦 编译脚本
+
+```bash
+# 基本用法
+./build_stealth.sh <配置路径> <目标OS> <目标架构>
+./build_stealth.sh  ./conf/frpc.toml linux amd64"  # darwin/windows/linux
+
+# 编译 Linux 版
+./build_stealth.sh ./01.toml linux amd64
+
+# 编译 Windows 版
+./build_stealth.sh ./02.toml windows amd64
+```
+
+## 输出说明
+```
+release/
+├── frpc_embeded_linux_amd64       # Linux可执行文件
+├── frpc_embeded_windows_arm64.exe # Windows可执行文件
+└── checksums.txt                  # 安全校验文件
+```
+
+## ⚙️原理
+
+- 配置固化： 使用 Go 1.16+ 的 `//go:embed` 指令将 TOML 文件嵌入二进制——(load.go)[https://github.com/hi-unc1e/frp/blob/495c589a07c36e78a434014a682885f9313ea36c/pkg/config/load.go]
+- 动态加载： 运行时优先检测嵌入式配置
+
+### 附录：文件结构示意图
+
+```
+frp-src/
+├── pkg/
+│   └── config/
+│       └── embedder/     # 嵌入配置文件存放处
+│           └── frpc.toml # 自动生成
+└── build_stealth.sh      # 编译脚本
+└── release/              # 成品输出目录
+```
+
+
 ## Sponsors
 
 frp is an open source project with its ongoing development made possible entirely by the support of our awesome sponsors. If you'd like to join them, please consider [sponsoring frp's development](https://github.com/sponsors/fatedier).

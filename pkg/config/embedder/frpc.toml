@@ -4,8 +4,8 @@ auth.method = "token"
 auth.token = "TOKEN"
 
 [[proxies]]
-name = "test-tcp"
+name = "test-again"
 type = "tcp"
 localIP = "127.0.0.1"
-localPort = 22
-remotePort = 6000
+localPort = 7000
+remotePort = 6001
