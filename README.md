@@ -46,7 +46,7 @@ release/
 
 ## ⚙️原理
 
-- 配置固化： 使用 Go 1.16+ 的 `//go:embed` 指令将 TOML 文件嵌入二进制——(load.go)[https://github.com/hi-unc1e/frp/blob/495c589a07c36e78a434014a682885f9313ea36c/pkg/config/load.go]
+- 配置固化： 使用 Go 1.16+ 的 `//go:embed` 指令将 TOML 文件嵌入二进制—— [pkg/config/load.go#L41](https://github.com/hi-unc1e/frp/blob/495c589a07c36e78a434014a682885f9313ea36c/pkg/config/load.go#L41)
 - 动态加载： 运行时优先检测嵌入式配置
 
 ### 附录：文件结构示意图
