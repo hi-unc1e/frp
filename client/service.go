@@ -183,7 +183,7 @@ func (svr *Service) Run(ctx context.Context) error {
 	if svr.ctl == nil {
 		cancelCause := cancelErr{}
 		_ = errors.As(context.Cause(svr.ctx), &cancelCause)
-		return fmt.Errorf("login to the server failed: %v. With loginFailExit enabled, no additional retries will be attempted", cancelCause.Err)
+		return fmt.Errorf("login to the server failed. With loginFailExit enabled, no additional retries will be attempted")
 	}
 
 	go svr.keepControllerWorking()
@@ -277,7 +277,7 @@ func (svr *Service) login() (conn net.Conn, connector Connector, err error) {
 
 	if loginRespMsg.Error != "" {
 		err = fmt.Errorf("%s", loginRespMsg.Error)
-		xl.Errorf("%s", loginRespMsg.Error)
+		//xl.Errorf("%s", loginRespMsg.Error)
 		return
 	}
 
@@ -295,7 +295,7 @@ func (svr *Service) loopLoginUntilSuccess(maxInterval time.Duration, firstLoginE
 		xl.Infof("try to connect to server...")
 		conn, connector, err := svr.login()
 		if err != nil {
-			xl.Warnf("connect to server error: %v", err)
+			xl.Warnf("connect to server error...")
 			if firstLoginExit {
 				svr.cancel(cancelErr{Err: err})
 			}
