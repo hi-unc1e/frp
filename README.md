@@ -40,8 +40,9 @@
 ```
 release/
 ├── frpc_embeded_linux_amd64       # Linux可执行文件
+├── frpc_embeded_linux_amd64.toml.backup       # 配置文件备份（供查阅是哪个目标）
 ├── frpc_embeded_windows_arm64.exe # Windows可执行文件
-└── checksums.txt                  # 安全校验文件
+├── frpc_embeded_windows_arm64.exe.toml.backup # 配置文件备份（供查阅是哪个目标）
 ```
 
 ## ⚙️原理
