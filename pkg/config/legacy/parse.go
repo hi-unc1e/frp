@@ -30,19 +30,28 @@ func ParseClientConfig(filePath string) (
 	var content []byte
 	content, err = GetRenderedConfFromFile(filePath)
 	if err != nil {
-		return
+		return ClientCommonConf{}, nil, nil, nil
 	}
+	return ParseClientConfigFromBytesContent(content, cfg, pxyCfgs, visitorCfgs)
+}
+
+func ParseClientConfigFromBytesContent(
+	content []byte,
+	cfg ClientCommonConf,
+	pxyCfgs map[string]ProxyConf,
+	visitorCfgs map[string]VisitorConf) (ClientCommonConf, map[string]ProxyConf, map[string]VisitorConf, error) {
+
 	configBuffer := bytes.NewBuffer(nil)
 	configBuffer.Write(content)
 
 	// Parse common section.
-	cfg, err = UnmarshalClientConfFromIni(content)
+	cfg, err := UnmarshalClientConfFromIni(content)
 	if err != nil {
-		return
+		return ClientCommonConf{}, nil, nil, nil
 	}
 	if err = cfg.Validate(); err != nil {
 		err = fmt.Errorf("parse config error: %v", err)
-		return
+		return ClientCommonConf{}, nil, nil, nil
 	}
 
 	// Aggregate proxy configs from include files.
@@ -50,7 +59,7 @@ func ParseClientConfig(filePath string) (
 	buf, err = getIncludeContents(cfg.IncludeConfigFiles)
 	if err != nil {
 		err = fmt.Errorf("getIncludeContents error: %v", err)
-		return
+		return ClientCommonConf{}, nil, nil, nil
 	}
 	configBuffer.WriteString("\n")
 	configBuffer.Write(buf)
@@ -58,9 +67,9 @@ func ParseClientConfig(filePath string) (
 	// Parse all proxy and visitor configs.
 	proxyCfgs, visitorCfgs, err = LoadAllProxyConfsFromIni(cfg.User, configBuffer.Bytes(), cfg.Start)
 	if err != nil {
-		return
+		return ClientCommonConf{}, nil, nil, nil
 	}
-	return
+	return cfg, pxyCfgs, visitorCfgs, err
 }
 
 // getIncludeContents renders all configs from paths.
