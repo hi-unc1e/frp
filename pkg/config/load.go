@@ -108,7 +108,6 @@ func LoadFileContentWithTemplate(path string, values *Values) ([]byte, error) {
 	var err error
 
 	if path == "" {
-		fmt.Println("Using embed.FS", b)
 		b, err = Frpc_FS.ReadFile(FRPC_EMBED_FILE_PATH)
 		if err != nil {
 			return nil, err
