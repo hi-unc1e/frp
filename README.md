@@ -36,7 +36,7 @@
 ./build_stealth.sh ./02.toml windows amd64
 ```
 
-## 输出说明
+### 输出说明
 ```
 release/
 ├── frpc_embeded_linux_amd64       # Linux可执行文件
@@ -55,8 +55,8 @@ release/
 frp-src/
 ├── pkg/
 │   └── config/
-│       └── embedder/     # 嵌入配置文件存放处
-│           └── frpc.toml # 自动生成
+│       └── embedder/     
+│           └── frpc.toml # 嵌入配置文件存放处
 └── build_stealth.sh      # 编译脚本
 └── release/              # 成品输出目录
 ```
