@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package legacy
+package config
 
 import (
 	"bytes"
@@ -23,7 +23,7 @@ import (
 
 func ParseClientConfig(filePath string) (
 	cfg ClientCommonConf,
-	proxyCfgs map[string]ProxyConf,
+	pxyCfgs map[string]ProxyConf,
 	visitorCfgs map[string]VisitorConf,
 	err error,
 ) {
@@ -32,14 +32,10 @@ func ParseClientConfig(filePath string) (
 	if err != nil {
 		return ClientCommonConf{}, nil, nil, nil
 	}
-	return ParseClientConfigFromBytesContent(content, cfg, pxyCfgs, visitorCfgs)
+	return ParseClientConfigFromBytesContent(content)
 }
 
-func ParseClientConfigFromBytesContent(
-	content []byte,
-	cfg ClientCommonConf,
-	pxyCfgs map[string]ProxyConf,
-	visitorCfgs map[string]VisitorConf) (ClientCommonConf, map[string]ProxyConf, map[string]VisitorConf, error) {
+func ParseClientConfigFromBytesContent(content []byte) (ClientCommonConf, map[string]ProxyConf, map[string]VisitorConf, error) {
 
 	configBuffer := bytes.NewBuffer(nil)
 	configBuffer.Write(content)
@@ -49,6 +45,7 @@ func ParseClientConfigFromBytesContent(
 	if err != nil {
 		return ClientCommonConf{}, nil, nil, nil
 	}
+	cfg.Complete()
 	if err = cfg.Validate(); err != nil {
 		err = fmt.Errorf("parse config error: %v", err)
 		return ClientCommonConf{}, nil, nil, nil
@@ -65,7 +62,7 @@ func ParseClientConfigFromBytesContent(
 	configBuffer.Write(buf)
 
 	// Parse all proxy and visitor configs.
-	proxyCfgs, visitorCfgs, err = LoadAllProxyConfsFromIni(cfg.User, configBuffer.Bytes(), cfg.Start)
+	pxyCfgs, visitorCfgs, err := LoadAllProxyConfsFromIni(cfg.User, configBuffer.Bytes(), cfg.Start)
 	if err != nil {
 		return ClientCommonConf{}, nil, nil, nil
 	}
