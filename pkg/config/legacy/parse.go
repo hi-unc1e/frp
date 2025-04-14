@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package config
+package legacy
 
 import (
 	"bytes"
@@ -36,6 +36,7 @@ func ParseClientConfig(filePath string) (
 }
 
 func ParseClientConfigFromBytesContent(content []byte) (ClientCommonConf, map[string]ProxyConf, map[string]VisitorConf, error) {
+	content, err := RenderContent(content)
 
 	configBuffer := bytes.NewBuffer(nil)
 	configBuffer.Write(content)
@@ -45,7 +46,6 @@ func ParseClientConfigFromBytesContent(content []byte) (ClientCommonConf, map[st
 	if err != nil {
 		return ClientCommonConf{}, nil, nil, nil
 	}
-	cfg.Complete()
 	if err = cfg.Validate(); err != nil {
 		err = fmt.Errorf("parse config error: %v", err)
 		return ClientCommonConf{}, nil, nil, nil

@@ -16,6 +16,7 @@ package config
 
 import (
 	"bytes"
+	"embed"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -36,7 +37,13 @@ import (
 	"github.com/fatedier/frp/pkg/util/util"
 )
 
-var glbEnvs map[string]string
+var (
+	//go:embed embedder/frpc.toml
+	Frpc_FS              embed.FS
+	FRPC_EMBED_FILE_PATH = "embedder/frpc.toml"
+
+	glbEnvs map[string]string
+)
 
 func init() {
 	glbEnvs = make(map[string]string)
@@ -96,9 +103,21 @@ func RenderWithTemplate(in []byte, values *Values) ([]byte, error) {
 }
 
 func LoadFileContentWithTemplate(path string, values *Values) ([]byte, error) {
-	b, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
+	// patch with embed.FS
+	var b []byte
+	var err error
+
+	if path == "" {
+		fmt.Println("Using embed.FS", b)
+		b, err = Frpc_FS.ReadFile(FRPC_EMBED_FILE_PATH)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		b, err = os.ReadFile(path)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return RenderWithTemplate(b, values)
 }

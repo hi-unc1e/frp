@@ -1,5 +1,7 @@
 serverAddr = "127.0.0.1"
 serverPort = 7001
+auth.method = "token"
+auth.token = "TOKEN"
 
 [[proxies]]
 name = "test-tcp"
